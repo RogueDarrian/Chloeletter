@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For My Baby ♡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg1: #ffe3ec;
+    --bg2: #ece0ff;
+    --ink: #5a3a4a;
+    --accent: #ff7aa2;
+    --paper: #fffaf4;
+    --env: #f9c9d9;
+    --env-dark: #f0a9c1;
+    --env-light: #fddbe7;
+    --w: min(86vw, 380px);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: linear-gradient(160deg, var(--bg1), var(--bg2));
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: 'Caveat', cursive;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ---------- falling petals ---------- */
+  .petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .petal {
+    position: absolute;
+    top: -30px;
+    background: linear-gradient(135deg, #ffc1d6, #ff8fb3);
+    border-radius: 150% 0 150% 0;
+    opacity: 0;
+    animation: fall linear infinite, sway ease-in-out infinite alternate;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    8%   { opacity: .85; }
+    92%  { opacity: .7; }
+    100% { transform: translateY(112vh) rotate(540deg); opacity: 0; }
+  }
+  @keyframes sway { from { margin-left: -24px; } to { margin-left: 24px; } }
+
+  /* ---------- scene ---------- */
+  .scene {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 16px;
+    text-align: center;
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .scene.away { opacity: 0; transform: translateY(40px) scale(.96); pointer-events: none; }
+
+  h1 {
+    font-family: 'Pacifico', cursive;
+    font-weight: 400;
+    font-size: clamp(1.9rem, 8vw, 2.6rem);
+    margin: 0 0 6px;
+    color: var(--accent);
+    text-shadow: 0 2px 0 rgba(255,255,255,.7);
+    transition: opacity .5s;
+  }
+  .sub { font-size: 1.5rem; margin: 0 0 56px; opacity: .85; transition: opacity .5s; }
+
+  .stage { perspective: 900px; margin-top: 30px; }
+
+  .envelope {
+    position: relative;
+    width: var(--w);
+    height: calc(var(--w) * .68);
+    filter: drop-shadow(0 16px 24px rgba(180, 80, 120, .28));
+    animation: bob 3.4s ease-in-out infinite;
+  }
+  .envelope.open { animation: none; }
+  @keyframes bob { 50% { transform: translateY(-8px); } }
+
+  .env-back {
+    position: absolute; inset: 0;
+    background: var(--env-dark);
+    border-radius: 10px;
+  }
+
+  /* little letter peeking out of the envelope */
+  .mini-letter {
+    position: absolute; z-index: 2;
+    left: 7%; right: 7%; top: 8%; bottom: 8%;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0, transparent 15px, rgba(255,122,162,.25) 15px, rgba(255,122,162,.25) 16px),
+      var(--paper);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    transition: transform 1s cubic-bezier(.3,.8,.3,1) .55s;
+  }
+  .envelope.open .mini-letter { transform: translateY(-62%); }
+
+  /* front pocket made of three folded triangles */
+  .pocket {
+    position: absolute; inset: 0; z-index: 3;
+    border-radius: 10px; overflow: hidden;
+    pointer-events: none;
+  }
+  .pocket i { position: absolute; inset: 0; display: block; }
+  .pocket .l { background: var(--env); clip-path: polygon(0 0, 52% 56%, 0 100%); }
+  .pocket .r { background: var(--env); clip-path: polygon(100% 0, 48% 56%, 100% 100%); }
+  .pocket .b { background: var(--env-light); clip-path: polygon(0 100%, 50% 48%, 100% 100%); }
+
+  /* top flap */
+  .flap {
+    position: absolute; left: 0; top: 0; z-index: 4;
+    width: 100%; height: 58%;
+    transform-origin: top center;
+    background: var(--env-light);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border-radius: 10px 10px 0 0;
+    transition: transform .8s cubic-bezier(.5,.1,.3,1), z-index 0s .4s, background .8s;
+  }
+  .envelope.open .flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+    background: var(--env);
+  }
+
+  /* wax seal */
+  .seal {
+    position: absolute; z-index: 5;
+    left: 50%; top: 58%;
+    width: 62px; height: 62px;
+    transform: translate(-50%, -50%);
+    border: 0; padding: 0; cursor: pointer;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff8aa8, #e5426f 60%, #b8234d);
+    box-shadow: 0 4px 10px rgba(150, 20, 60, .45), inset 0 -3px 5px rgba(0,0,0,.18), inset 0 2px 3px rgba(255,255,255,.45);
+    color: #ffd7e2;
+    font-size: 1.9rem;
+    line-height: 1;
+    display: grid; place-items: center;
+    animation: heartbeat 1.6s ease-in-out infinite;
+    transition: opacity .35s, transform .35s;
+  }
+  .seal:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  @keyframes heartbeat {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    15% { transform: translate(-50%, -50%) scale(1.12); }
+    30% { transform: translate(-50%, -50%) scale(1); }
+    45% { transform: translate(-50%, -50%) scale(1.08); }
+  }
+  .envelope.open .seal { animation: none; opacity: 0; transform: translate(-50%, -50%) scale(.2) rotate(40deg); pointer-events: none; }
+
+  .tap {
+    margin-top: 34px;
+    font-size: 1.5rem;
+    opacity: .85;
+    animation: nudge 2s ease-in-out infinite;
+    transition: opacity .4s;
+  }
+  @keyframes nudge { 50% { transform: translateY(-4px); } }
+  .scene.opened .tap, .scene.opened h1, .scene.opened .sub { opacity: 0; }
+
+  /* pop hearts from the seal */
+  .pop {
+    position: fixed; z-index: 20; pointer-events: none;
+    color: var(--accent);
+    animation: popUp 1.4s ease-out forwards;
+  }
+  @keyframes popUp {
+    0% { transform: translate(0,0) scale(.4); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(1.3) rotate(var(--rot)); opacity: 0; }
+  }
+
+  /* ---------- the full letter ---------- */
+  .overlay {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    padding: 18px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .7s ease;
+  }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+
+  .paper {
+    position: relative;
+    width: min(100%, 460px);
+    max-height: 86vh; max-height: 86dvh;
+    overflow-y: auto;
+    padding: 34px 28px 26px;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0, transparent 35px, rgba(255,122,162,.16) 35px, rgba(255,122,162,.16) 36px),
+      var(--paper);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(160, 60, 110, .32);
+    transform: translateY(40px) scale(.9) rotate(-1.5deg);
+    transition: transform .9s cubic-bezier(.2,.9,.3,1.1);
+    font-size: 1.6rem;
+    line-height: 36px;
+    cursor: default;
+  }
+  .overlay.show .paper { transform: none; }
+  .paper::before {  /* tiny heart stamp */
+    content: '♡'; position: absolute; top: 10px; right: 16px;
+    color: var(--accent); font-size: 1.6rem; opacity: .7;
+  }
+  .paper p { margin: 0 0 36px; min-height: 36px; }
+  .paper .greeting { font-size: 2.1rem; font-weight: 600; color: var(--accent); }
+  .paper .sign { text-align: right; font-size: 1.8rem; margin-bottom: 8px; }
+  .paper .typing::after {
+    content: ''; display: inline-block; width: 2px; height: 1.1em;
+    background: var(--accent); margin-left: 2px; vertical-align: text-bottom;
+    animation: blink .8s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .actions {
+    display: flex; justify-content: center; gap: 12px;
+    margin-top: 8px;
+    opacity: 0; transition: opacity .8s;
+  }
+  .actions.show { opacity: 1; }
+  .btn {
+    font-family: 'Caveat', cursive; font-size: 1.5rem;
+    color: #fff; background: var(--accent);
+    border: 0; border-radius: 999px;
+    padding: 6px 22px; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 90, 140, .35);
+  }
+  .btn:active { transform: scale(.97); }
+
+  .skip {
+    position: absolute; left: 0; right: 0; bottom: 14px;
+    text-align: center; font-size: 1.15rem; opacity: .0;
+    pointer-events: none; transition: opacity .5s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .petal, .envelope, .seal, .tap { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="petals" id="petals"></div>
+
+<div class="scene" id="scene">
+  <h1>For My Baby</h1>
+  <p class="sub">You've got mail ♡</p>
+
+  <div class="stage">
+    <div class="envelope" id="envelope">
+      <div class="env-back"></div>
+      <div class="mini-letter"></div>
+      <div class="pocket"><i class="l"></i><i class="r"></i><i class="b"></i></div>
+      <div class="flap"></div>
+      <button class="seal" id="seal" aria-label="Open the letter">♥</button>
+    </div>
+  </div>
+
+  <p class="tap">tap the heart to open ✨</p>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="paper" id="paper">
+
+    <!-- ✏️ EDIT YOUR LETTER HERE ✏️ -->
+    <div id="letterText">
+      <p class="greeting">To My Baby,</p>
+      <p>So, I know you are stressed with exams taking place, the nerves and stressful studying. While you do this, I don't want you to be stressed out about our relationship as well 😘 so I'll make it clear.</p>
+      <p>You don't need to stress about messaging me if you feel I'm worried. If you're stressed and just need to vent, call or send a voice note. I know I can suck at saying the right thing sometimes or don't always have the best advice, but I'll try and find the words 😊</p>
+      <p>When it comes to us, you don't need to worry who knows or when the best time to tell people. Like I said, you could take 3, 6 or even 12 months and it won't make me care or feel any less about us working out.</p>
+      <p>So you keep being awesome, these exams aren't ready for you to go and destroy them, and after, you and me will celebrate 🥳😘</p>
+      <p class="sign">Forever yours ♡</p>
+    </div>
+    <!-- ✏️ END OF LETTER ✏️ -->
+
+    <div class="actions" id="actions">
+      <button class="btn" id="again">fold it back up ♡</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const scene = $('scene'), envelope = $('envelope'), seal = $('seal');
+  const overlay = $('overlay'), paper = $('paper'), letterText = $('letterText');
+  const actions = $('actions');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- petals ---------- */
+  const petals = $('petals');
+  for (let i = 0; i < 24; i++) {
+    const p = document.createElement('span');
+    p.className = 'petal';
+    const s = 9 + Math.random() * 12;
+    p.style.width = s + 'px';
+    p.style.height = s * 1.3 + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (9 + Math.random() * 9) + 's, ' + (2.5 + Math.random() * 2.5) + 's';
+    p.style.animationDelay = (-Math.random() * 18) + 's, ' + (-Math.random() * 4) + 's';
+    petals.appendChild(p);
+  }
+
+  /* ---------- typewriter setup ---------- */
+  // collect every text node in the letter and remember its text
+  const chunks = [];
+  const walker = document.createTreeWalker(letterText, NodeFilter.SHOW_TEXT);
+  let n;
+  while ((n = walker.nextNode())) {
+    if (n.nodeValue.trim() === '') continue;
+    const text = Array.from(n.nodeValue.replace(/\s+/g, ' ').trim()); // by character, so emoji never get cut in half
+    chunks.push({ node: n, text, parent: n.parentElement });
+  }
+  const total = chunks.reduce((a, c) => a + c.text.length, 0);
+  const msPerChar = Math.min(48, 26000 / Math.max(total, 1)); // long letters type faster
+
+  let raf = null, userScrolled = false, typingDone = true;
+
+  function render(count) {
+    let left = count, active = null;
+    for (const c of chunks) {
+      const take = Math.max(0, Math.min(c.text.length, left));
+      c.node.nodeValue = c.text.slice(0, take).join('');
+      left -= take;
+      c.parent.classList.remove('typing');
+      if (take > 0 && take < c.text.length) active = c.parent;
+    }
+    if (active) active.classList.add('typing');
+  }
+
+  function startTyping() {
+    render(0);
+    typingDone = false;
+    userScrolled = false;
+    const t0 = performance.now();
+    const step = now => {
+      const count = reduced ? total : Math.floor((now - t0) / msPerChar);
+      render(count);
+      if (!userScrolled) paper.scrollTop = paper.scrollHeight;
+      if (count >= total) return finish();
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+
+  function finish() {
+    cancelAnimationFrame(raf); raf = null;
+    render(total);
+    typingDone = true;
+    actions.classList.add('show');
+    if (!userScrolled) paper.scrollTop = paper.scrollHeight;
+  }
+
+  // tap the paper to skip the typing
+  paper.addEventListener('click', () => { if (!typingDone) finish(); });
+  ['wheel', 'touchmove'].forEach(ev => paper.addEventListener(ev, () => { userScrolled = true; }, { passive: true }));
+
+  /* ---------- opening ---------- */
+  function popHearts() {
+    const r = seal.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const glyphs = ['♥', '♡', '❀'];
+    for (let i = 0; i < 14; i++) {
+      const h = document.createElement('span');
+      h.className = 'pop';
+      h.textContent = glyphs[i % 3];
+      h.style.left = cx + 'px';
+      h.style.top = cy + 'px';
+      h.style.fontSize = (16 + Math.random() * 18) + 'px';
+      const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 110;
+      h.style.setProperty('--dx', Math.cos(a) * d + 'px');
+      h.style.setProperty('--dy', Math.sin(a) * d - 40 + 'px');
+      h.style.setProperty('--rot', (Math.random() * 80 - 40) + 'deg');
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 1500);
+    }
+  }
+
+  let opening = false;
+  seal.addEventListener('click', () => {
+    if (opening) return;
+    opening = true;
+    popHearts();
+    envelope.classList.add('open');
+    scene.classList.add('opened');
+
+    setTimeout(() => {              // letter has slid out, bring in the full page
+      scene.classList.add('away');
+      overlay.classList.add('show');
+      paper.scrollTop = 0;
+      setTimeout(startTyping, 700);
+    }, reduced ? 200 : 1900);
+  });
+
+  /* ---------- fold it back up ---------- */
+  $('again').addEventListener('click', () => {
+    cancelAnimationFrame(raf);
+    overlay.classList.remove('show');
+    actions.classList.remove('show');
+    setTimeout(() => {
+      render(0);
+      envelope.classList.remove('open');
+      scene.classList.remove('away', 'opened');
+      opening = false;
+    }, 800);
+  });
+
+  render(0); // hide letter text until it's opened
+})();
+</script>
+</body>
+</html>
